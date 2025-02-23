@@ -6,7 +6,13 @@ import path = require("path");
 
 export class InfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
-    super(scope, id, props);
+    super(scope, id, {
+      env: {
+        account: process.env.AWS_ACCOUNT_ID,
+        region: process.env.AWS_REGION,
+      },
+      ...props,
+    });
 
     const table = new dynamodb.Table(this, "BookingsTable", {
       tableName: "bookings-table",
