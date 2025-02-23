@@ -44,6 +44,11 @@ input UserInput {
   createdAt: AWSDateTime!
 }
 
+type Query {
+  getBooking(bookingId: ID!): Booking
+  getUserBookings(userId: ID!): [Booking]
+}
+
 type Mutation {
   addBooking(input: AddBookingInput!): Booking
 }
