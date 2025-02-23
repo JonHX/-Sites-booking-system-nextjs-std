@@ -13,7 +13,8 @@ export class InfraStack extends cdk.Stack {
       },
       ...props,
     });
-
+    console.log(process.env.AWS_ACCOUNT_ID, "AWS_ACCOUNT_ID")
+    console.log(process.env.AWS_REGION, "process.env.AWS_REGION")
     const table = new dynamodb.Table(this, "BookingsTable", {
       tableName: "bookings-table",
       partitionKey: { name: "pk", type: dynamodb.AttributeType.STRING },
