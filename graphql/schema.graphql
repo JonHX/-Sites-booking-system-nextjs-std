@@ -1,12 +1,49 @@
 type Booking {
-  bookingId: ID! 
-  userId: ID     
+  bookingId: ID!
+  userId: ID!
+  carId: ID!
+  startTime: AWSDateTime!
+  endTime: AWSDateTime!
+  status: String!
 }
 
-type Query {
-  getBooking(pk: ID!, sk: String!): Booking 
+type Car {
+  make: String!
+  model: String!
+  year: Int!
+  status: String!
 }
 
-schema {
-  query: Query
+type User {
+  name: String!
+  email: String!
+  createdAt: AWSDateTime!
+}
+
+input AddBookingInput {
+  bookingId: ID!
+  userId: ID!
+  carId: ID!
+  startTime: AWSDateTime!
+  endTime: AWSDateTime!
+  status: String!
+  carDetails: CarInput!
+  userDetails: UserInput!
+}
+
+input CarInput {
+  make: String!
+  model: String!
+  year: Int!
+  status: String!
+}
+
+input UserInput {
+  name: String!
+  email: String!
+  createdAt: AWSDateTime!
+}
+
+type Mutation {
+  addBooking(input: AddBookingInput!): Booking
 }

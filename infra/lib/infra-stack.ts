@@ -2,29 +2,30 @@ import * as cdk from "aws-cdk-lib";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as appsync from "aws-cdk-lib/aws-appsync";
 import { Construct } from "constructs";
-import path = require("path");
+import * as path from "path";
 
 export class InfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
-    super(scope, id, {
-      env: {
-        account: process.env.AWS_ACCOUNT_ID,
-        region: process.env.AWS_REGION
-      },
-      ...props,
-    });
+    super(scope, id, props);
 
-    const table = new dynamodb.Table(this, "BookingsTable", {
-      tableName: "bookings-table",
-      partitionKey: { name: "pk", type: dynamodb.AttributeType.STRING },
-      sortKey: { name: "sk", type: dynamodb.AttributeType.STRING },
+    const table = new dynamodb.Table(this, "CarRentalTable", {
+      tableName: "car-rental-table",
+      partitionKey: { name: "PK", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "SK", type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       removalPolicy: cdk.RemovalPolicy.RETAIN, // Prevent accidental deletion
+    });
+    
+    // user gsi
+    table.addGlobalSecondaryIndex({
+      indexName: "UserLookup",
+      partitionKey: { name: "userId", type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL, 
     });
 
     const api = new appsync.GraphqlApi(this, "BookingsAPI", {
       name: "bookings-api",
-      schema: appsync.SchemaFile.fromAsset(path.join(__dirname, '..', '..', 'graphql', 'schema.graphql')),
+      schema: appsync.SchemaFile.fromAsset(path.join(__dirname, "..", "..", "graphql/schema.graphql")),
       authorizationConfig: {
         defaultAuthorization: {
           authorizationType: appsync.AuthorizationType.API_KEY,
@@ -35,11 +36,11 @@ export class InfraStack extends cdk.Stack {
 
     const dataSource = api.addDynamoDbDataSource("DynamoDataSource", table);
 
-    dataSource.createResolver("GetBookingResolver", {
-      typeName: "Query",
-      fieldName: "getBooking",
-      requestMappingTemplate: appsync.MappingTemplate.dynamoDbGetItem("pk", "sk"),
-      responseMappingTemplate: appsync.MappingTemplate.dynamoDbResultItem(),
+    dataSource.createResolver("AddBookingResolver", {
+      typeName: "Mutation",
+      fieldName: "addBooking",
+      requestMappingTemplate: appsync.MappingTemplate.fromFile(path.join(__dirname, "addBooking-request.vtl")),
+      responseMappingTemplate: appsync.MappingTemplate.fromFile(path.join(__dirname, "addBooking-response.vtl")),
     });
 
     new cdk.CfnOutput(this, "GraphQLAPIURL", { value: api.graphqlUrl });

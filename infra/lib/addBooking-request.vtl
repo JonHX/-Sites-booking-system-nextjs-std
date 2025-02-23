@@ -1,0 +1,44 @@
+{
+  "version": "2018-05-29",
+  "operation": "BatchPutItem",
+  "tables": {
+    "car-rental-table": [
+      {
+        "PutRequest": {
+          "Item": {
+            "PK": { "S": "BOOKING#${context.arguments.input.bookingId}" },
+            "SK": { "S": "CAR#${context.arguments.input.carId}" },
+            "make": { "S": "${context.arguments.input.carDetails.make}" },
+            "model": { "S": "${context.arguments.input.carDetails.model}" },
+            "year": { "N": "${context.arguments.input.carDetails.year}" },
+            "status": { "S": "${context.arguments.input.carDetails.status}" }
+          }
+        }
+      },
+      {
+        "PutRequest": {
+          "Item": {
+            "PK": { "S": "BOOKING#${context.arguments.input.bookingId}" },
+            "SK": { "S": "USER#${context.arguments.input.userId}" },
+            "name": { "S": "${context.arguments.input.userDetails.name}" },
+            "email": { "S": "${context.arguments.input.userDetails.email}" },
+            "createdAt": { "S": "${context.arguments.input.userDetails.createdAt}" }
+          }
+        }
+      },
+      {
+        "PutRequest": {
+          "Item": {
+            "PK": { "S": "BOOKING#${context.arguments.input.bookingId}" },
+            "SK": { "S": "METADATA" },
+            "userId": { "S": "${context.arguments.input.userId}" },
+            "carId": { "S": "${context.arguments.input.carId}" },
+            "startTime": { "S": "${context.arguments.input.startTime}" },
+            "endTime": { "S": "${context.arguments.input.endTime}" },
+            "status": { "S": "${context.arguments.input.status}" }
+          }
+        }
+      }
+    ]
+  }
+}
