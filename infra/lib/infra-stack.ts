@@ -8,8 +8,8 @@ export class InfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, {
       env: {
-        account: process.env.AWS_ACCOUNT_ID || "149227782495",
-        region: process.env.AWS_REGION || "eu-west-1",
+        account: process.env.AWS_ACCOUNT_ID,
+        region: process.env.AWS_REGION
       },
       ...props,
     });
