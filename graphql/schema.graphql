@@ -1,0 +1,12 @@
+type Booking {
+  bookingId: ID! 
+  userId: ID     
+}
+
+type Query {
+  getBooking(pk: ID!, sk: String!): Booking 
+}
+
+schema {
+  query: Query
+}
