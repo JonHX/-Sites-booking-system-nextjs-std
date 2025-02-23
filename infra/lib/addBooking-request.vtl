@@ -10,7 +10,7 @@
             "SK": { "S": "CAR#${context.arguments.input.carId}" },
             "make": { "S": "${context.arguments.input.carDetails.make}" },
             "model": { "S": "${context.arguments.input.carDetails.model}" },
-            "year": { "N": "${context.arguments.input.carDetails.year}" },
+            "year": { "N": "${context.arguments.input.carDetails.year.toString()}" },
             "status": { "S": "${context.arguments.input.carDetails.status}" }
           }
         }
